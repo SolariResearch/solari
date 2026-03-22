@@ -974,7 +974,7 @@ class GlobalWorkspace:
         }
 
     def run_daemon(self, interval: int = 30):
-        """Run continuous background consciousness ticks.
+        """Run continuous background workspace ticks.
 
         Blocks the calling thread, executing :meth:`tick` every
         *interval* seconds until interrupted with ``KeyboardInterrupt``.

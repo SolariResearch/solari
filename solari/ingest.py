@@ -242,7 +242,7 @@ _DOMAIN_HINTS = [
     ({"python", "javascript", "rust", "golang", "java", "typescript"}, "code"),
     ({"math", "theorem", "proof", "algebra", "calculus"}, "mathematics"),
     ({"physics", "quantum", "thermodynamic", "relativity"}, "physics"),
-    ({"revenue", "sales", "client", "outreach", "pricing"}, "revenue"),
+    ({"business", "strategy", "market", "growth", "pricing"}, "business"),
     ({"biology", "immune", "neural", "brain", "genetic"}, "biology"),
     ({"game_theory", "nash", "equilibrium", "mechanism", "auction"}, "game_theory"),
     ({"cybernetics", "homeostasis", "feedback", "variety", "viable"}, "cybernetics"),
