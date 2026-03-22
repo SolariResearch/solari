@@ -175,6 +175,24 @@ solari minds
 
 Grounding your LLM with relevant knowledge consistently improves answer quality on domain-specific questions compared to ungrounded responses.
 
+### Confidence-Based Memory
+
+Minds stay sharp automatically. When you ingest better information on a topic, outdated entries get replaced.
+
+```bash
+# Ingest with confidence — replaces similar entries with lower confidence
+solari ingest --url "https://new-research.com" --mind physics --confidence 0.9
+
+# See mind health
+solari minds
+
+# Manual cleanup: remove low-quality entries
+solari prune --mind physics --below 0.3 --dry-run
+solari prune --mind physics --below 0.3
+```
+
+No stale knowledge accumulating forever. Higher-confidence entries automatically supersede weaker ones on the same topic (cosine similarity > 0.85). Your minds get better over time, not just bigger.
+
 ### The Dream Engine
 
 This is what nobody else has.
