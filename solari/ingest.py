@@ -60,7 +60,10 @@ Optional (for PDF):
 """
 
 import argparse
-import fcntl
+try:
+    import fcntl
+except ImportError:
+    fcntl = None  # Windows — file locking handled via fallback
 import gzip
 import hashlib
 import json
@@ -80,7 +83,7 @@ EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 EMBEDDING_DIM = 384
 CHUNK_MAX_CHARS = 1500
 PRE_CHUNK_MAX_CHARS = 1200
-COOKIE_FILE = "/tmp/youtube_cookies.txt"
+COOKIE_FILE = os.path.join(tempfile.gettempdir(), "youtube_cookies.txt")
 
 _cached_encoder = None
 
@@ -183,14 +186,29 @@ def _mind_lock(mind_dir: Path):
     """Acquire an exclusive file lock for a mind directory."""
     lock_path = mind_dir / ".ingest.lock"
     lock_fd = open(lock_path, "w")
-    fcntl.flock(lock_fd, fcntl.LOCK_EX)
+    if fcntl is not None:
+        fcntl.flock(lock_fd, fcntl.LOCK_EX)
+    else:
+        # Windows fallback — msvcrt locking
+        try:
+            import msvcrt
+            msvcrt.locking(lock_fd.fileno(), msvcrt.LK_LOCK, 1)
+        except (ImportError, OSError):
+            pass  # Best-effort locking on platforms without fcntl/msvcrt
     return lock_fd
 
 
 def _mind_unlock(lock_fd) -> None:
     """Release a mind directory lock."""
     try:
-        fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        if fcntl is not None:
+            fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        else:
+            try:
+                import msvcrt
+                msvcrt.locking(lock_fd.fileno(), msvcrt.LK_UNLCK, 1)
+            except (ImportError, OSError):
+                pass
         lock_fd.close()
     except Exception:
         pass
