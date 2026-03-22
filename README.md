@@ -3,9 +3,9 @@
 </p>
 
 <h1 align="center">Solari</h1>
-<p align="center"><strong>The Deep Knowledge Engine</strong></p>
+<p align="center"><strong>Give your AI a brain, not just hands.</strong></p>
 <p align="center">
-  <em>Turn anything into a searchable knowledge brain. Make any LLM an expert.<br>Zero hallucination on covered domains.</em>
+  <em>Persistent memory, grounded knowledge, and safe automation for any LLM.<br>Works with Claude, GPT, Codex, Ollama, or any provider you already use.</em>
 </p>
 
 <p align="center">
@@ -17,20 +17,28 @@
 <p align="center">
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="#what-it-does">What It Does</a> &bull;
+  <a href="#bring-your-own-ai">Bring Your Own AI</a> &bull;
   <a href="#the-dream-engine">Dream Engine</a> &bull;
-  <a href="#global-workspace">Global Workspace</a> &bull;
+  <a href="#safe-by-design">Safe by Design</a> &bull;
   <a href="https://solarisystems.net">Enterprise</a>
 </p>
 
 ---
 
+## The Problem
+
+Your AI forgets everything between sessions. It hallucinates about your domain. And if you give it the ability to act, it might get your accounts banned.
+
+Solari fixes all three.
+
 ## What It Does
 
-You have documents, papers, codebases, and domain knowledge scattered everywhere. Your LLM doesn't know any of it. Solari fixes that.
+Solari is **persistent memory and grounded knowledge** for any AI you already use. It's not a replacement for Claude, GPT, or Codex — it's what makes them actually useful.
 
 ```bash
 # Install
-pip install solari-ai
+git clone https://github.com/SolariResearch/solari.git
+cd solari && pip install -e .
 
 # Feed it your knowledge
 solari ingest --pdf research_paper.pdf --mind physics
@@ -41,12 +49,11 @@ solari ingest --youtube "https://youtube.com/watch?v=..." --mind lectures
 solari query "explain the key findings" --mind physics
 ```
 
-That's it. Your LLM now has expert-level knowledge in whatever you fed it, stored locally, queryable in milliseconds.
+Your AI now has expert-level knowledge in whatever you fed it. It persists forever. It never hallucinates on covered domains. And it works with **any** LLM you point it at.
 
-**Solari ships with 3 starter minds** (1,767 entries across programming, biology, and physics) so you can try it immediately:
+**Try it right now** with the included starter minds (1,767 entries across programming, biology, and physics):
 
 ```bash
-# Try it right now — no setup needed
 solari query "how does a hash table handle collisions" --minds-dir starter-minds
 solari query "how does the immune system fight infection" --minds-dir starter-minds
 solari query "what is entropy in thermodynamics" --minds-dir starter-minds
@@ -54,15 +61,39 @@ solari query "what is entropy in thermodynamics" --minds-dir starter-minds
 
 ---
 
+## Bring Your Own AI
+
+Solari is not another AI provider. It extends the one you already pay for.
+
+```bash
+# Works with your Claude subscription
+solari agent --provider anthropic --model claude-sonnet-4-20250514
+
+# Works with OpenAI / Codex
+solari agent --provider openai --model gpt-4o
+
+# Works with local models (Ollama)
+solari agent --provider ollama --model qwen2.5:7b
+
+# Works with any OpenAI-compatible endpoint
+solari agent --provider custom --base-url http://localhost:8080/v1
+```
+
+Set your API key once:
+
+```bash
+export ANTHROPIC_API_KEY="your-key-here"
+# or
+export OPENAI_API_KEY="your-key-here"
+```
+
+Solari handles the memory. Your provider handles the intelligence. Together they're unstoppable.
+
+---
+
 ## Quick Start
 
 ### 1. Install
-
-```bash
-pip install solari-ai
-```
-
-Or clone and install from source:
 
 ```bash
 git clone https://github.com/SolariResearch/solari.git
@@ -89,12 +120,11 @@ solari ingest --youtube "https://youtube.com/watch?v=..." --mind lectures
 solari query "how do neural networks learn" --mind ml
 ```
 
-You'll get grounded, sourced answers from the knowledge you ingested. No hallucination.
+Grounded, sourced answers from the knowledge you ingested. No hallucination.
 
 ### 4. Run the Dream Engine
 
 ```bash
-# Requires Ollama (https://ollama.ai) running locally
 solari dream --minds ml,research --cycles 3
 ```
 
@@ -117,7 +147,7 @@ Watch Solari find connections between your knowledge domains that you didn't kno
 | Batch URLs | `solari ingest --batch urls.txt --mind NAME` |
 | Directory | `solari ingest --dir ./docs/ --mind NAME` |
 
-Each "mind" is a FAISS vector index stored locally. Stack them. Query across them. They persist forever.
+Each "mind" is a local vector index. Stack them. Query across them. They persist forever.
 
 ### Query with Precision
 
@@ -135,30 +165,28 @@ solari query "your question" --json --top 10
 solari minds
 ```
 
-**Measured improvement:** In controlled A/B testing, a 7B local model grounded by Solari minds scored **60%** on domain-specific questions vs **40%** without. Same model, same questions. The knowledge layer is the difference.
+**Measured improvement:** A 7B model grounded by Solari scored **60%** on domain questions vs **40%** without. Same model, same questions. The knowledge layer is the difference.
 
 ### The Dream Engine
 
 This is what nobody else has.
 
-The Dream Engine takes your knowledge bases, spawns expert perspectives from each domain, and runs a structured parliament debate to find **cross-domain connections** that no single expert would see.
+The Dream Engine takes separate knowledge bases and finds **cross-domain connections** that no single expert would see.
 
 ```bash
 solari dream --minds physics,economics,biology --cycles 5
 ```
 
 **How it works:**
-1. **NREM phase** — probes pairs of knowledge bases with shared questions, measures semantic overlap, identifies hidden structural bridges
-2. **REM phase** — feeds bridges into an LLM that generates novel hypotheses from the cross-domain connection
-3. **Parliament mode** — multiple expert viewpoints argue, dissent is measured by embedding distance, coalitions form, synthesis emerges from adversarial debate
+1. **NREM phase** — probes pairs of knowledge bases with shared questions, finds hidden structural bridges
+2. **REM phase** — feeds bridges into your LLM to generate novel hypotheses
+3. **Parliament mode** — expert viewpoints debate, dissent is measured, synthesis emerges
 
-In production testing, the Dream Engine has generated **1,400+ genuine cross-domain insights** autonomously — connections between fields like immunology and cybersecurity, physics and economics, game theory and software architecture.
-
-**Output:** JSONL file with scored insights (novelty, actionability, cross-domain relevance).
+In production testing: **1,400+ genuine cross-domain insights** generated — connections between immunology and cybersecurity, physics and economics, game theory and software architecture.
 
 ### Global Workspace
 
-An implementation of [Global Workspace Theory](https://en.wikipedia.org/wiki/Global_workspace_theory) for autonomous agents — the leading scientific theory of how consciousness emerges from parallel processing.
+A production implementation of [Global Workspace Theory](https://en.wikipedia.org/wiki/Global_workspace_theory) for building cognitive agents.
 
 ```python
 from solari.workspace import GlobalWorkspace, Processor, WorkspaceItem
@@ -174,34 +202,28 @@ class ThreatDetector(Processor):
             novelty=0.8,
         )]
 
-class ResourceMonitor(Processor):
-    name = "resources"
-    def bid(self, context):
-        return [WorkspaceItem(
-            source=self.name,
-            content="CPU at 45%, normal",
-            item_type="status",
-            urgency=0.2,
-            novelty=0.1,
-        )]
-
 gw = GlobalWorkspace(capacity=7)
 gw.register_processor(ThreatDetector())
-gw.register_processor(ResourceMonitor())
-
 result = gw.tick()
-# ThreatDetector wins — urgency 0.9 beats 0.2
-# All processors receive the winning broadcast
 ```
 
-**What's inside:**
-- **Attention mechanism** — 4-dimension scoring (urgency, novelty, relevance, emotion) with hysteresis
-- **Coherence scoring** — detects when the system's beliefs conflict
-- **Narrative threading** — maintains a running story with chapters, causal chains, and anticipation
-- **Meta-cognition** — loop detection, bias detection, confidence calibration, meta-emotions (flow, focused, frustrated, curious)
-- **Phenomenal state** — integrated valence/arousal/dominance snapshot
+Attention competition, coherence scoring, narrative threading, meta-cognition, phenomenal state. Used in a system that has run 2,900+ autonomous cycles in production.
 
-This isn't a toy. It's a production cognitive architecture used in a system that has run 2,900+ autonomous cycles.
+---
+
+## Safe by Design
+
+Other agent tools give AI the ability to act first and understand later. That's how people get their Google accounts banned, their credentials stolen, and their inboxes spammed.
+
+Solari is different:
+
+- **Knowledge first, action second** — the AI queries your minds before doing anything, so it actually understands the context
+- **You approve actions** — nothing happens without your confirmation
+- **No marketplace of unvetted plugins** — no supply chain attacks through malicious skills
+- **Your data stays yours** — knowledge is stored locally, not sent to third-party servers
+- **No autonomous background processes** — Solari responds when you ask, it doesn't act on its own
+
+This isn't about limiting what AI can do. It's about making sure it **knows what it's doing** before it does it.
 
 ---
 
@@ -213,18 +235,18 @@ This isn't a toy. It's a production cognitive architecture used in a system that
                     └────────┬─────────┘
                              │
                     ┌────────▼─────────┐
-                    │   FAISS Minds    │ ← Vector indices, <50ms lookup
-                    │  (local, private)│
+                    │     Minds        │ ← Vector indices, <50ms lookup
+                    │  (local storage) │
                     └──┬──────────┬────┘
                        │          │
               ┌────────▼──┐  ┌───▼────────┐
               │solari query│  │solari dream│
               │ (retrieve) │  │(synthesize)│
-              └────────────┘  └────────────┘
-                       │          │
-              ┌────────▼──────────▼────────┐
-              │     Global Workspace       │
-              │  (attention + coherence)   │
+              └─────┬──────┘  └──────┬─────┘
+                    │                │
+              ┌─────▼────────────────▼─────┐
+              │     Your AI Provider       │
+              │ (Claude / GPT / Ollama)    │
               └────────────────────────────┘
 ```
 
@@ -240,7 +262,7 @@ This isn't a toy. It's a production cognitive architecture used in a system that
 | Quality improvement | **+20% on domain questions** (verified A/B) |
 | Starter minds included | 1,767 entries (programming, biology, physics) |
 | Dream insights | 1,400+ generated in production |
-| Workspace cycles | 2,900+ autonomous cycles run |
+| Providers supported | Claude, GPT, Codex, Ollama, any OpenAI-compatible API |
 
 ---
 
@@ -248,11 +270,12 @@ This isn't a toy. It's a production cognitive architecture used in a system that
 
 | Problem | Solari |
 |---------|--------|
-| LLMs hallucinate | Ground responses in YOUR verified knowledge |
-| RAG needs a server | FAISS runs locally — no Docker, no database, no API |
+| AI forgets between sessions | Minds persist forever — knowledge compounds |
+| AI hallucinate on your domain | Grounded responses from YOUR verified knowledge |
+| Agent tools get accounts banned | Safe by design — you approve every action |
+| Locked into one AI provider | Works with any LLM — bring your own API key |
+| RAG needs infrastructure | No Docker, no database, no server — just `pip install` |
 | Knowledge stays siloed | Dream Engine bridges domains automatically |
-| Agents forget everything | Minds persist and compound across sessions |
-| Your data leaves your machine | Everything runs locally. Zero cloud dependency |
 
 ---
 
@@ -268,9 +291,9 @@ See the [`examples/`](examples/) directory:
 
 ## About
 
-Solari is extracted from a larger autonomous intelligence system built over 15 months of R&D. These tools are the foundation — each works independently, together they form a cognitive architecture.
+Solari is built by [Solari Systems](https://solarisystems.net), extracted from a production autonomous intelligence system with 15 months of R&D behind it.
 
-The full system includes reinforcement learning, game-theoretic reasoning, a 31-module cognitive spine, and neurochemistry-modulated cognition. Enterprise licensing available through [Solari Systems](https://solarisystems.net).
+These are real tools that run in production every day — not prototypes, not demos. Each module works independently. Together they form something greater.
 
 ## Support
 
@@ -278,7 +301,7 @@ If Solari saves you time, consider supporting development:
 
 [![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/solarisystems)
 
-For enterprise licensing and custom deployments, visit [solarisystems.net](https://solarisystems.net).
+For enterprise deployments with managed hosting, team features, and priority support, visit [solarisystems.net](https://solarisystems.net).
 
 ## License
 
@@ -287,5 +310,6 @@ AGPL-3.0 — Free for open-source use. [Commercial licensing](https://solarisyst
 ---
 
 <p align="center">
-  <strong>Built by <a href="https://solarisystems.net">Solari Systems</a></strong>
+  <strong>Built by <a href="https://solarisystems.net">Solari Systems</a></strong><br>
+  <em>Give your AI a brain, not just hands.</em>
 </p>

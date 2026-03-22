@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Solari CLI — The Deep Knowledge Engine
+Solari CLI — Give your AI a brain, not just hands.
 
 Usage:
     solari ingest --url URL --mind NAME
     solari ingest --pdf PATH --mind NAME
-    solari ingest --youtube URL --mind NAME
     solari query "your question" [--minds NAME1,NAME2] [--top N]
+    solari agent "your question" [--provider anthropic|openai|ollama]
     solari dream --minds NAME1,NAME2 [--cycles N]
     solari minds                     # list available minds
 """
@@ -28,6 +28,13 @@ def cmd_query(args):
     from solari.query import main as query_main
     sys.argv = ["solari-query"] + args
     query_main()
+
+
+def cmd_agent(args):
+    """Route to agent module."""
+    from solari.agent import main as agent_main
+    sys.argv = ["solari-agent"] + args
+    agent_main()
 
 
 def cmd_dream(args):
@@ -92,6 +99,7 @@ def main():
     commands = {
         "ingest": cmd_ingest,
         "query": cmd_query,
+        "agent": cmd_agent,
         "dream": cmd_dream,
         "minds": cmd_minds,
         "list": cmd_minds,
