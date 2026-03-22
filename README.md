@@ -36,7 +36,10 @@ Solari fixes all three.
 Solari is **persistent memory and grounded knowledge** for any AI you already use. It's not a replacement for Claude, GPT, or Codex — it's what makes them actually useful.
 
 ```bash
-# Install
+# Install from PyPI
+pip install solari-ai
+
+# Or from source
 git clone https://github.com/SolariResearch/solari.git
 cd solari && pip install -e .
 
@@ -96,9 +99,14 @@ Solari handles the memory. Your provider handles the intelligence. Together they
 ### 1. Install
 
 ```bash
+pip install solari-ai
+```
+
+Or from source:
+
+```bash
 git clone https://github.com/SolariResearch/solari.git
-cd solari
-pip install -e .
+cd solari && pip install -e .
 ```
 
 ### 2. Build Your First Mind
