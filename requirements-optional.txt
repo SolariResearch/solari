@@ -1,0 +1,5 @@
+# YouTube transcription
+yt-dlp>=2023.0.0
+
+# PDF ingestion
+pymupdf>=1.22.0

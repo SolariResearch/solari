@@ -1,168 +1,225 @@
 <p align="center">
-  <img src="logo.png" alt="Solari" width="200"/>
+  <img src="logo.png" alt="Solari" width="180"/>
 </p>
 
-<h1 align="center">SOLARI</h1>
-<h3 align="center">The Deep Knowledge Engine</h3>
+<h1 align="center">Solari</h1>
+<p align="center"><strong>The Deep Knowledge Engine</strong></p>
+<p align="center">
+  <em>Turn anything into a searchable knowledge brain. Make any LLM an expert.<br>Zero hallucination on covered domains.</em>
+</p>
 
-> Turn anything into a searchable knowledge brain. Make any LLM an expert. Zero hallucination on covered domains.
+<p align="center">
+  <a href="#quick-start">Quick Start</a> &bull;
+  <a href="#what-it-does">What It Does</a> &bull;
+  <a href="#the-dream-engine">Dream Engine</a> &bull;
+  <a href="#global-workspace">Global Workspace</a> &bull;
+  <a href="https://solarisystems.net">Enterprise</a>
+</p>
 
-Solari is a cognitive toolkit for building, querying, and synthesizing local knowledge bases. Feed it PDFs, URLs, YouTube videos, or research papers. It builds FAISS vector indices that any local LLM can query for grounded, hallucination-free answers.
+---
 
-**What makes it different:** Solari doesn't just retrieve — it *thinks*. The Dream Engine finds connections across knowledge domains that no single expert would see. The Global Workspace gives your agent a real cognitive architecture with attention, coherence, and narrative threading.
+## What It Does
+
+You have documents, papers, codebases, and domain knowledge scattered everywhere. Your LLM doesn't know any of it. Solari fixes that.
+
+```bash
+# Install
+pip install solari-ai
+
+# Feed it your knowledge
+solari ingest --pdf research_paper.pdf --mind physics
+solari ingest --url "https://docs.your-project.com" --mind my_project
+solari ingest --youtube "https://youtube.com/watch?v=..." --mind lectures
+
+# Ask questions grounded in YOUR knowledge
+solari query "explain the key findings" --mind physics
+```
+
+That's it. Your LLM now has expert-level knowledge in whatever you fed it, stored locally, queryable in milliseconds.
+
+**Solari ships with starter minds** so you can try it immediately:
+
+```bash
+# Try it right now with the included knowledge bases
+solari query "what is SQL injection" --minds-dir starter-minds
+solari query "Python exception handling best practices" --minds-dir starter-minds
+```
 
 ---
 
 ## Quick Start
 
+### 1. Install
+
 ```bash
 pip install solari-ai
-
-# Ingest a research paper
-solari ingest --pdf quantum_computing.pdf --mind physics
-
-# Ingest a YouTube lecture
-solari ingest --youtube "https://youtube.com/watch?v=..." --mind machine_learning
-
-# Ingest an entire documentation site
-solari ingest --url "https://docs.example.com" --mind my_project
-
-# Ask questions — grounded in YOUR knowledge, not training data
-solari query "explain quantum entanglement" --mind physics
-
-# Find cross-domain connections nobody else would see
-solari dream --minds physics,biology,economics --cycles 5
 ```
+
+Or clone and install from source:
+
+```bash
+git clone https://github.com/SolariResearch/solari.git
+cd solari
+pip install -e .
+```
+
+### 2. Build Your First Mind
+
+```bash
+# Ingest a Wikipedia article
+solari ingest --wikipedia "Machine learning" --mind ml
+
+# Or a PDF
+solari ingest --pdf paper.pdf --mind research
+
+# Or a YouTube lecture
+solari ingest --youtube "https://youtube.com/watch?v=..." --mind lectures
+```
+
+### 3. Query It
+
+```bash
+solari query "how do neural networks learn" --mind ml
+```
+
+You'll get grounded, sourced answers from the knowledge you ingested. No hallucination.
+
+### 4. Run the Dream Engine
+
+```bash
+# Requires Ollama (https://ollama.ai) running locally
+solari dream --minds ml,research --cycles 3
+```
+
+Watch Solari find connections between your knowledge domains that you didn't know existed.
 
 ---
 
-## The Tools
+## Features
 
-### `solari ingest` — Feed Solari
+### Ingest Anything
 
-Turn any content source into a searchable FAISS knowledge index:
+| Source | Command |
+|--------|---------|
+| Web page | `solari ingest --url URL --mind NAME` |
+| PDF | `solari ingest --pdf PATH --mind NAME` |
+| YouTube | `solari ingest --youtube URL --mind NAME` |
+| arXiv paper | `solari ingest --arxiv 2301.00001 --mind NAME` |
+| Wikipedia | `solari ingest --wikipedia "Topic" --mind NAME` |
+| Local file | `solari ingest --file notes.txt --mind NAME` |
+| Batch URLs | `solari ingest --batch urls.txt --mind NAME` |
+| Directory | `solari ingest --dir ./docs/ --mind NAME` |
 
-| Source | Command | What It Does |
-|--------|---------|--------------|
-| PDF | `solari ingest --pdf paper.pdf --mind NAME` | Extracts text, chunks, embeds, indexes |
-| URL | `solari ingest --url https://... --mind NAME` | Scrapes content, cleans HTML, indexes |
-| YouTube | `solari ingest --youtube URL --mind NAME` | Transcribes audio, indexes transcript |
-| arXiv | `solari ingest --arxiv 2301.00001 --mind NAME` | Fetches paper, extracts, indexes |
-| Directory | `solari ingest --dir ./docs/ --mind NAME` | Recursively ingests all files |
+Each "mind" is a FAISS vector index stored locally. Stack them. Query across them. They persist forever.
 
-Minds are stored locally in `./minds/` by default. Each mind is a FAISS index + metadata. Stack them — 10 minds, 100 minds, 1000 minds. They all query in milliseconds.
-
-### `solari query` — Ask Solari
-
-Retrieve grounded knowledge from your minds:
+### Query with Precision
 
 ```bash
-# Query all minds
-solari query "how does TCP handle congestion?"
+# Search all minds
+solari query "your question"
 
-# Query specific minds
-solari query "what causes reentrancy vulnerabilities?" --minds security,solidity
+# Search specific minds
+solari query "your question" --minds physics,chemistry
 
-# Get JSON output for pipelines
-solari query "market size for AI consulting" --json --top 10
+# JSON output for pipelines
+solari query "your question" --json --top 10
+
+# List available minds
+solari minds
 ```
 
-**Proven quality improvement:** In controlled A/B testing, a 7B local model with Solari minds scored 60% on domain-specific questions vs 40% for the same model without minds. The knowledge layer makes any model perform above its weight class.
+**Measured improvement:** In controlled A/B testing, a 7B local model grounded by Solari minds scored **60%** on domain-specific questions vs **40%** without. Same model, same questions. The knowledge layer is the difference.
 
-### `solari dream` — Let Solari Think
+### The Dream Engine
 
-The Dream Engine is what nobody else has. It takes multiple knowledge domains and algorithmically finds structural bridges between them:
+This is what nobody else has.
+
+The Dream Engine takes your knowledge bases, spawns expert perspectives from each domain, and runs a structured parliament debate to find **cross-domain connections** that no single expert would see.
 
 ```bash
-# Find connections between physics and economics
-solari dream --minds physics,economics --cycles 3
-
-# Full parliament debate across all your minds
-solari dream --all --cycles 10 --output insights.jsonl
+solari dream --minds physics,economics,biology --cycles 5
 ```
 
 **How it works:**
-1. Selects knowledge from different domains
-2. Spawns expert perspectives from each domain
-3. Runs a parliament debate — advocates argue, skeptics challenge
-4. Synthesizes insights that survive adversarial scrutiny
-5. Scores by novelty, actionability, and cross-domain relevance
+1. **NREM phase** — probes pairs of knowledge bases with shared questions, measures semantic overlap, identifies hidden structural bridges
+2. **REM phase** — feeds bridges into an LLM that generates novel hypotheses from the cross-domain connection
+3. **Parliament mode** — multiple expert viewpoints argue, dissent is measured by embedding distance, coalitions form, synthesis emerges from adversarial debate
 
-In production, the Dream Engine has generated 1,400+ genuine cross-domain insights autonomously.
+In production testing, the Dream Engine has generated **1,400+ genuine cross-domain insights** autonomously — connections between fields like immunology and cybersecurity, physics and economics, game theory and software architecture.
 
-### `solari workspace` — Give Your Agent a Brain
+**Output:** JSONL file with scored insights (novelty, actionability, cross-domain relevance).
 
-An implementation of Global Workspace Theory for autonomous agents:
+### Global Workspace
+
+An implementation of [Global Workspace Theory](https://en.wikipedia.org/wiki/Global_workspace_theory) for autonomous agents — the leading scientific theory of how consciousness emerges from parallel processing.
 
 ```python
-from solari import GlobalWorkspace, Processor
+from solari.workspace import GlobalWorkspace, Processor, WorkspaceItem
 
-# Create processors that compete for attention
-class SecurityScanner(Processor):
-    def process(self, broadcast):
-        # Analyze for security issues
-        return {"urgency": 0.9, "finding": "SQL injection in auth.py"}
+class ThreatDetector(Processor):
+    name = "threat"
+    def bid(self, context):
+        return [WorkspaceItem(
+            source=self.name,
+            content="Anomalous login pattern detected",
+            item_type="threat",
+            urgency=0.9,
+            novelty=0.8,
+        )]
 
-class PerformanceMonitor(Processor):
-    def process(self, broadcast):
-        return {"urgency": 0.3, "status": "normal"}
+class ResourceMonitor(Processor):
+    name = "resources"
+    def bid(self, context):
+        return [WorkspaceItem(
+            source=self.name,
+            content="CPU at 45%, normal",
+            item_type="status",
+            urgency=0.2,
+            novelty=0.1,
+        )]
 
-# Workspace handles attention competition
-ws = GlobalWorkspace(processors=[SecurityScanner(), PerformanceMonitor()])
-ws.tick()  # SecurityScanner wins — higher urgency
-# All processors receive the broadcast
+gw = GlobalWorkspace(capacity=7)
+gw.register_processor(ThreatDetector())
+gw.register_processor(ResourceMonitor())
+
+result = gw.tick()
+# ThreatDetector wins — urgency 0.9 beats 0.2
+# All processors receive the winning broadcast
 ```
 
-Features:
-- **Attention mechanism** — processors bid based on urgency, novelty, relevance, emotion
+**What's inside:**
+- **Attention mechanism** — 4-dimension scoring (urgency, novelty, relevance, emotion) with hysteresis
 - **Coherence scoring** — detects when the system's beliefs conflict
-- **Narrative threading** — maintains a running story with causal chain
-- **Meta-cognition** — loop detection, bias detection, meta-emotions
+- **Narrative threading** — maintains a running story with chapters, causal chains, and anticipation
+- **Meta-cognition** — loop detection, bias detection, confidence calibration, meta-emotions (flow, focused, frustrated, curious)
+- **Phenomenal state** — integrated valence/arousal/dominance snapshot
+
+This isn't a toy. It's a production cognitive architecture used in a system that has run 2,900+ autonomous cycles.
 
 ---
 
 ## Architecture
 
 ```
-                    ┌─────────────────┐
-                    │   solari ingest    │  ← PDFs, URLs, YouTube, arXiv
-                    └────────┬────────┘
+                    ┌──────────────────┐
+                    │  solari ingest   │ ← PDFs, URLs, YouTube, arXiv
+                    └────────┬─────────┘
                              │
-                    ┌────────▼────────┐
-                    │   FAISS Minds   │  ← Vector indices, millisecond lookup
+                    ┌────────▼─────────┐
+                    │   FAISS Minds    │ ← Vector indices, <50ms lookup
                     │  (local, private)│
-                    └──┬─────────┬────┘
-                       │         │
-              ┌────────▼──┐  ┌──▼────────┐
-              │ solari query │  │ solari dream │
-              │ (retrieve)│  │(synthesize)│
-              └───────────┘  └───────────┘
-                       │         │
-              ┌────────▼─────────▼────────┐
-              │    Global Workspace       │
-              │  (attention + coherence)  │
-              └───────────────────────────┘
+                    └──┬──────────┬────┘
+                       │          │
+              ┌────────▼──┐  ┌───▼────────┐
+              │solari query│  │solari dream│
+              │ (retrieve) │  │(synthesize)│
+              └────────────┘  └────────────┘
+                       │          │
+              ┌────────▼──────────▼────────┐
+              │     Global Workspace       │
+              │  (attention + coherence)   │
+              └────────────────────────────┘
 ```
-
----
-
-## Why Solari?
-
-| Problem | How Solari Solves It |
-|---------|----------------------|
-| LLMs hallucinate | Ground responses in YOUR verified knowledge |
-| RAG is slow and complex | FAISS indices query in <50ms, no server needed |
-| Knowledge silos | Dream Engine bridges domains automatically |
-| Agents have no memory | Minds persist across sessions, compound over time |
-| Cloud dependency | Everything runs locally. Your data never leaves your machine |
-
----
-
-## Requirements
-
-- Python 3.10+
-- `pip install solari-ai`
-- Optional: [Ollama](https://ollama.ai) for local LLM synthesis in Dream Engine
 
 ---
 
@@ -170,25 +227,49 @@ Features:
 
 | Metric | Value |
 |--------|-------|
-| Query latency | <50ms (warm FAISS) |
-| Ingest speed | ~1000 chunks/second |
-| Mind size | ~4MB per 1000 entries |
-| Quality improvement | +20% on domain questions (verified A/B) |
+| Query latency | <50ms warm |
+| Ingest throughput | ~1,000 chunks/sec |
+| Mind storage | ~4MB per 1,000 entries |
+| Quality improvement | **+20% on domain questions** (verified A/B) |
+| Dream insights | 1,400+ generated in production |
+| Workspace cycles | 2,900+ autonomous cycles run |
 
 ---
 
-## From the Creators
+## Why Solari?
 
-Solari is a standalone toolkit extracted from a larger autonomous intelligence system built over 15 months. Each tool works independently. Together they form a cognitive architecture.
-
-The full system — with reinforcement learning, game-theoretic reasoning, and a 31-module cognitive spine — is available for enterprise licensing through [Solari Systems](https://solarisystems.net).
+| Problem | Solari |
+|---------|--------|
+| LLMs hallucinate | Ground responses in YOUR verified knowledge |
+| RAG needs a server | FAISS runs locally — no Docker, no database, no API |
+| Knowledge stays siloed | Dream Engine bridges domains automatically |
+| Agents forget everything | Minds persist and compound across sessions |
+| Your data leaves your machine | Everything runs locally. Zero cloud dependency |
 
 ---
+
+## Examples
+
+See the [`examples/`](examples/) directory:
+
+- **[quickstart.py](examples/quickstart.py)** — Ingest and query in 30 lines
+- **[dream_demo.py](examples/dream_demo.py)** — Cross-domain synthesis in action
+- **[workspace_demo.py](examples/workspace_demo.py)** — Build a cognitive architecture
+
+---
+
+## About
+
+Solari is extracted from a larger autonomous intelligence system built over 15 months of R&D. These tools are the foundation — each works independently, together they form a cognitive architecture.
+
+The full system includes reinforcement learning, game-theoretic reasoning, a 31-module cognitive spine, and neurochemistry-modulated cognition. Enterprise licensing available through [Solari Systems](https://solarisystems.net).
 
 ## License
 
-AGPL-3.0 — Free for open-source use. Commercial licensing available.
+AGPL-3.0 — Free for open-source use. [Commercial licensing](https://solarisystems.net) available.
 
 ---
 
-*Built by [Solari Systems](https://solarisystems.net)*
+<p align="center">
+  <strong>Built by <a href="https://solarisystems.net">Solari Systems</a></strong>
+</p>
