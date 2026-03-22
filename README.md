@@ -379,9 +379,50 @@ See the [`examples/`](examples/) directory:
 
 ## About
 
-Solari is built by [Solari Systems](https://solarisystems.net), extracted from a production autonomous intelligence system with 15 months of R&D behind it.
+This library is the open-source extraction of something much larger.
 
-These are real tools that run in production every day — not prototypes, not demos. Each module works independently. Together they form something greater.
+**Solari is a live autonomous cognitive intelligence platform, not a concept.** It runs on a multi-node, fully on-prem stack built from **under $2,000 of consumer-grade hardware**, while delivering capabilities normally associated with far larger and more expensive systems.
+
+What makes it different from every other AI tool:
+
+- **It is not a single frozen model.** Solari routes problems across specialized domains, verifies its own outputs through adversarial reasoning, learns from outcomes, and adapts its behavior over time.
+- **It improves after deployment.** Static models ship and decay. Solari compounds knowledge with every interaction — what it learns today makes it smarter tomorrow.
+- **It runs on hardware you already own.** Three consumer PCs. No cloud bill. No data leaving your network.
+
+### Current production state
+
+| | |
+|---|---|
+| Status | Live production system |
+| Infrastructure | 3 compute nodes, under $2,000 total hardware |
+| Active services | 46+ across cognitive, perceptual, and operational layers |
+| Autonomous jobs | 25+ running continuously |
+| Revenue APIs | 5 live with payments enabled |
+| Knowledge base | 900+ specialized domains, millions of searchable entries |
+| Reasoning | Multi-engine with adversarial debate, cross-domain synthesis, and confidence calibration |
+| Deployment | Fully on-prem / air-gappable |
+
+### SEMA — Semantic Expert Mixture Architecture
+
+The production system runs on **SEMA**, a novel architecture where model expertise weights are **derived from verified knowledge**, not learned through statistical training.
+
+Traditional mixture-of-experts models learn their routing weights during training — they're frozen at deployment. SEMA's routing weights come from a live knowledge graph that grows and refines itself. New knowledge changes the weights. The model gets smarter without retraining.
+
+SEMA enables:
+- **Sparse activation** — only relevant experts fire per query, not the full parameter space
+- **Distributed inference** — reasoning steps execute in parallel across GPU nodes
+- **Grounded output** — answers are built from verified facts with numerical confidence weights, not statistical pattern matching
+- **Live learning** — new information integrates into the weight space immediately, no fine-tuning required
+
+This library gives you the building blocks: minds, queries, the Dream Engine, and the Global Workspace. The full SEMA architecture is what ties them together into a self-improving system.
+
+### In plain English
+
+Most AI tools answer prompts. Solari operates like an evolving intelligence system. It improves with use, can be specialized to any client or mission, keeps all data local, and works without requiring expensive enterprise infrastructure.
+
+**The core value is simple: static models do not improve after deployment — Solari does. And it does it on cheap consumer hardware.**
+
+---
 
 ## Support
 
@@ -389,7 +430,7 @@ If Solari saves you time, consider supporting development:
 
 [![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/solarisystems)
 
-For enterprise deployments with managed hosting, team features, and priority support, visit [solarisystems.net](https://solarisystems.net).
+For enterprise deployments with the full SEMA architecture, managed hosting, team features, and priority support, visit [solarisystems.net](https://solarisystems.net).
 
 ## License
 
@@ -399,5 +440,5 @@ AGPL-3.0 — Free for open-source use. [Commercial licensing](https://solarisyst
 
 <p align="center">
   <strong>Built by <a href="https://solarisystems.net">Solari Systems</a></strong><br>
-  <em>Give your AI a brain, not just hands.</em>
+  <em>A self-improving autonomous intelligence platform — already running in production on consumer hardware.</em>
 </p>
