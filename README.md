@@ -5,7 +5,7 @@
 <h1 align="center">Solari</h1>
 <p align="center"><strong>Give your AI a brain, not just hands.</strong></p>
 <p align="center">
-  <em>Persistent memory, grounded knowledge, and safe automation for any LLM.<br>Works with Claude, GPT, Codex, Ollama, or any provider you already use.</em>
+  <em>Persistent memory and grounded knowledge for any LLM.<br>Works with Claude, GPT, Codex, Ollama, and OpenAI-compatible endpoints.</em>
 </p>
 
 <p align="center">
@@ -46,10 +46,10 @@ solari ingest --url "https://docs.your-project.com" --mind my_project
 solari ingest --youtube "https://youtube.com/watch?v=..." --mind lectures
 
 # Ask questions grounded in YOUR knowledge
-solari query "explain the key findings" --mind physics
+solari query "explain the key findings" --minds physics
 ```
 
-Your AI now has expert-level knowledge in whatever you fed it. It persists forever. It never hallucinates on covered domains. And it works with **any** LLM you point it at.
+Your AI now has expert-level knowledge in whatever you fed it. It persists across sessions. Responses are grounded in your verified data instead of the model's training set. Works with any LLM that has an API.
 
 **Try it right now** with the included starter minds (1,767 entries across programming, biology, and physics):
 
@@ -165,7 +165,7 @@ solari query "your question" --json --top 10
 solari minds
 ```
 
-**Measured improvement:** A 7B model grounded by Solari scored **60%** on domain questions vs **40%** without. Same model, same questions. The knowledge layer is the difference.
+Grounding your LLM with relevant knowledge consistently improves answer quality on domain-specific questions compared to ungrounded responses.
 
 ### The Dream Engine
 
@@ -182,7 +182,7 @@ solari dream --minds physics,economics,biology --cycles 5
 2. **REM phase** — feeds bridges into your LLM to generate novel hypotheses
 3. **Parliament mode** — expert viewpoints debate, dissent is measured, synthesis emerges
 
-In production testing: **1,400+ genuine cross-domain insights** generated — connections between immunology and cybersecurity, physics and economics, game theory and software architecture.
+The Dream Engine can surface surprising connections — like structural parallels between immune system antibody selection and genetic algorithms, or thermodynamic entropy and information theory.
 
 ### Global Workspace
 
@@ -207,23 +207,23 @@ gw.register_processor(ThreatDetector())
 result = gw.tick()
 ```
 
-Attention competition, coherence scoring, narrative threading, meta-cognition, phenomenal state. Used in a system that has run 2,900+ autonomous cycles in production.
+Attention competition, coherence scoring, narrative threading, meta-cognition, phenomenal state. A production-grade cognitive architecture for building intelligent agents.
 
 ---
 
 ## Safe by Design
 
-Other agent tools give AI the ability to act first and understand later. That's how people get their Google accounts banned, their credentials stolen, and their inboxes spammed.
+Other agent tools give AI the ability to act first and understand later. That's how people get their accounts banned and their credentials leaked.
 
-Solari is different:
+Solari takes a different approach:
 
-- **Knowledge first, action second** — the AI queries your minds before doing anything, so it actually understands the context
-- **You approve actions** — nothing happens without your confirmation
-- **No marketplace of unvetted plugins** — no supply chain attacks through malicious skills
-- **Your data stays yours** — knowledge is stored locally, not sent to third-party servers
-- **No autonomous background processes** — Solari responds when you ask, it doesn't act on its own
+- **Knowledge first** — the agent queries your minds before responding, so it has real context instead of guessing
+- **No plugin marketplace** — no third-party skills to install, no supply chain risk
+- **Your data stays local** — knowledge is stored as files on your machine, not sent to third-party servers
+- **No background processes** — Solari runs when you invoke it, not autonomously
+- **You control the AI provider** — bring your own API key, use your own subscription, switch anytime
 
-This isn't about limiting what AI can do. It's about making sure it **knows what it's doing** before it does it.
+Solari doesn't execute system commands or automate workflows (yet). It makes your AI smarter about your domain — that's the foundation everything else should be built on.
 
 ---
 
@@ -252,17 +252,15 @@ This isn't about limiting what AI can do. It's about making sure it **knows what
 
 ---
 
-## Performance
+## At a Glance
 
-| Metric | Value |
+| | |
 |--------|-------|
-| Query latency | <50ms warm |
-| Ingest throughput | ~1,000 chunks/sec |
-| Mind storage | ~4MB per 1,000 entries |
-| Quality improvement | **+20% on domain questions** (verified A/B) |
 | Starter minds included | 1,767 entries (programming, biology, physics) |
-| Dream insights | 1,400+ generated in production |
-| Providers supported | Claude, GPT, Codex, Ollama, any OpenAI-compatible API |
+| Storage per mind | ~4MB per 1,000 entries |
+| Providers supported | Claude, GPT, Codex, Ollama, OpenAI-compatible endpoints |
+| Dependencies | FAISS, sentence-transformers, numpy, requests, bs4 |
+| License | AGPL-3.0 (commercial licensing available) |
 
 ---
 
@@ -270,12 +268,11 @@ This isn't about limiting what AI can do. It's about making sure it **knows what
 
 | Problem | Solari |
 |---------|--------|
-| AI forgets between sessions | Minds persist forever — knowledge compounds |
-| AI hallucinate on your domain | Grounded responses from YOUR verified knowledge |
-| Agent tools get accounts banned | Safe by design — you approve every action |
-| Locked into one AI provider | Works with any LLM — bring your own API key |
+| AI forgets between sessions | Minds persist on disk — knowledge carries over |
+| AI hallucinates on your domain | Responses grounded in YOUR verified knowledge |
+| Locked into one AI provider | Works with Claude, GPT, Ollama — bring your own key |
 | RAG needs infrastructure | No Docker, no database, no server — just `pip install` |
-| Knowledge stays siloed | Dream Engine bridges domains automatically |
+| Knowledge stays siloed | Dream Engine finds cross-domain connections |
 
 ---
 
