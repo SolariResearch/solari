@@ -264,6 +264,14 @@ Solari is extracted from a larger autonomous intelligence system built over 15 m
 
 The full system includes reinforcement learning, game-theoretic reasoning, a 31-module cognitive spine, and neurochemistry-modulated cognition. Enterprise licensing available through [Solari Systems](https://solarisystems.net).
 
+## Support
+
+If Solari saves you time, consider supporting development:
+
+[![Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/solarisystems)
+
+For enterprise licensing and custom deployments, visit [solarisystems.net](https://solarisystems.net).
+
 ## License
 
 AGPL-3.0 — Free for open-source use. [Commercial licensing](https://solarisystems.net) available.
