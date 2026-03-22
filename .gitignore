@@ -6,5 +6,6 @@ build/
 .eggs/
 minds/
 *.faiss
+!starter-minds/**/*.faiss
 *.pkl
 .env

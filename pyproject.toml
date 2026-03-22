@@ -9,7 +9,7 @@ description = "The Deep Knowledge Engine — Turn anything into a searchable kno
 readme = "README.md"
 license = {text = "AGPL-3.0"}
 requires-python = ">=3.10"
-authors = [{name = "Solari Systems", email = "mark@solarisystems.net"}]
+authors = [{name = "Solari Systems", email = "contact@solarisystems.net"}]
 keywords = ["knowledge-base", "faiss", "rag", "cognitive-architecture", "cross-domain"]
 classifiers = [
     "Development Status :: 4 - Beta",
