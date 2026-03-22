@@ -25,6 +25,71 @@
 
 ---
 
+## See It In Action
+
+<details>
+<summary><strong>60-second demo: Persistent Memory + Dream Engine</strong> (click to expand)</summary>
+
+```
+═══════════════════════════════════════════════════
+  Solari — Your LLM Remembers Everything
+  pip install solari-ai
+═══════════════════════════════════════════════════
+
+$ solari minds --list
+Loaded minds:
+  physics       — 2,847 facts  (quantum, thermo, mechanics)
+  biology       — 3,102 facts  (cell bio, genetics, ecology)
+  programming   — 4,519 facts  (Python, algorithms, patterns)
+
+Total: 10,468 searchable facts across 3 domains
+
+$ solari query "What is the second law of thermodynamics?"
+
+▸ Searching 3 minds...
+▸ Found 7 relevant facts (best: 0.94 similarity)
+▸ Generating grounded response...
+
+The Second Law of Thermodynamics states that the total
+entropy of an isolated system never decreases (ΔS ≥ 0).
+
+Systems naturally evolve toward the macrostate with the
+most microstates — this is why heat flows from hot to cold,
+why ice melts, and why you can't unscramble an egg.
+
+[Grounded in: physics mind, similarity 0.94]
+[No hallucination — answer derived from ingested knowledge]
+
+═══════════════════════════════════════════════════
+  Dream Engine — Cross-Domain Synthesis
+═══════════════════════════════════════════════════
+
+$ solari dream --minds physics,biology --cycles 1
+
+◈ NREM Phase: Probing bridges between physics and biology...
+  Bridge found: entropy ↔ evolution
+  Bridge found: energy minimization ↔ protein folding
+  Bridge found: phase transitions ↔ cell differentiation
+
+◈ REM Phase: Generating hypotheses...
+
+  HYPOTHESIS:
+  Protein folding can be modeled as a thermodynamic phase
+  transition — the folded state represents a free energy
+  minimum analogous to crystallization from a supercooled
+  liquid. Misfolded proteins (prions) are metastable states
+  trapped in local minima, like amorphous glass.
+
+  Dissent: 0.23 (low — strong cross-domain consensus)
+  Novelty: 0.81 (high — not derivable from either mind alone)
+```
+
+*The Dream Engine connects domains that single-domain experts never bridge. That's what nobody else has.*
+
+</details>
+
+---
+
 ## The Problem
 
 Your AI forgets everything between sessions. It hallucinates about your domain. And if you give it the ability to act, it might get your accounts banned.
