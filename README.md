@@ -9,6 +9,12 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/SolariResearch/solari/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" alt="License"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
+  <a href="https://github.com/SolariResearch/solari/stargazers"><img src="https://img.shields.io/github/stars/SolariResearch/solari?style=social" alt="Stars"></a>
+</p>
+
+<p align="center">
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="#what-it-does">What It Does</a> &bull;
   <a href="#the-dream-engine">Dream Engine</a> &bull;
