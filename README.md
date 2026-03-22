@@ -1,6 +1,9 @@
-# SOLARI
+<p align="center">
+  <img src="logo.png" alt="Solari" width="200"/>
+</p>
 
-### The Deep Knowledge Engine
+<h1 align="center">SOLARI</h1>
+<h3 align="center">The Deep Knowledge Engine</h3>
 
 > Turn anything into a searchable knowledge brain. Make any LLM an expert. Zero hallucination on covered domains.
 
