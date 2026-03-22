@@ -9,3 +9,4 @@ minds/
 !starter-minds/**/*.faiss
 *.pkl
 .env
+*.lock

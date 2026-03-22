@@ -43,12 +43,13 @@ solari query "explain the key findings" --mind physics
 
 That's it. Your LLM now has expert-level knowledge in whatever you fed it, stored locally, queryable in milliseconds.
 
-**Solari ships with starter minds** so you can try it immediately:
+**Solari ships with 3 starter minds** (1,767 entries across programming, biology, and physics) so you can try it immediately:
 
 ```bash
-# Try it right now with the included knowledge bases
-solari query "what is SQL injection" --minds-dir starter-minds
-solari query "Python exception handling best practices" --minds-dir starter-minds
+# Try it right now — no setup needed
+solari query "how does a hash table handle collisions" --minds-dir starter-minds
+solari query "how does the immune system fight infection" --minds-dir starter-minds
+solari query "what is entropy in thermodynamics" --minds-dir starter-minds
 ```
 
 ---
@@ -237,6 +238,7 @@ This isn't a toy. It's a production cognitive architecture used in a system that
 | Ingest throughput | ~1,000 chunks/sec |
 | Mind storage | ~4MB per 1,000 entries |
 | Quality improvement | **+20% on domain questions** (verified A/B) |
+| Starter minds included | 1,767 entries (programming, biology, physics) |
 | Dream insights | 1,400+ generated in production |
 | Workspace cycles | 2,900+ autonomous cycles run |
 
