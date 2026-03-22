@@ -83,6 +83,8 @@ EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 EMBEDDING_DIM = 384
 CHUNK_MAX_CHARS = 1500
 PRE_CHUNK_MAX_CHARS = 1200
+DEFAULT_CONFIDENCE = 0.5
+SUPERSEDE_SIMILARITY_THRESHOLD = 0.85
 COOKIE_FILE = os.path.join(tempfile.gettempdir(), "youtube_cookies.txt")
 
 _cached_encoder = None
@@ -305,12 +307,15 @@ def ingest_into_mind(
     texts: list[str],
     source: str = "manual",
     minds_dir: str = DEFAULT_MINDS_DIR,
+    confidence: float = DEFAULT_CONFIDENCE,
 ) -> int:
     """Chunk, embed, and store *texts* in the named FAISS mind.
 
     Creates the mind if it does not exist.  Deduplicates against existing
-    entries via blake2b hashes.  Writes are atomic (temp file + rename) and
-    protected by an exclusive file lock.
+    entries via blake2b hashes.  When a new chunk is semantically similar to
+    an existing entry (cosine > SUPERSEDE_SIMILARITY_THRESHOLD) and has higher
+    confidence, the old entry is replaced.  Writes are atomic (temp + rename)
+    and protected by an exclusive file lock.
 
     Returns the number of *new* entries added.
     """
@@ -322,7 +327,7 @@ def ingest_into_mind(
 
     lock_fd = _mind_lock(mind_dir)
     try:
-        return _ingest_locked(mind_name, texts, source, mind_dir)
+        return _ingest_locked(mind_name, texts, source, mind_dir, confidence)
     finally:
         _mind_unlock(lock_fd)
 
@@ -332,6 +337,7 @@ def _ingest_locked(
     texts: list[str],
     source: str,
     mind_dir: Path,
+    confidence: float = DEFAULT_CONFIDENCE,
 ) -> int:
     """Core ingestion logic, called while holding the directory lock."""
     import faiss
@@ -402,23 +408,59 @@ def _ingest_locked(
             "source": source,
             "category": mind_name,
             "domain_tags": [],
+            "confidence": confidence,
         }
         for chunk, h in new_chunks
     ]
+
+    # -- Supersede: replace lower-confidence entries -----------------------
+    pruned_indices: set[int] = set()
+    if existing_index is not None and existing_index.ntotal > 0:
+        scores, indices = existing_index.search(embeddings, 1)
+        for i, (score_row, idx_row) in enumerate(zip(scores, indices)):
+            best_score = float(score_row[0])
+            best_idx = int(idx_row[0])
+            if (best_score >= SUPERSEDE_SIMILARITY_THRESHOLD
+                    and 0 <= best_idx < len(existing_meta)):
+                old_conf = existing_meta[best_idx].get(
+                    "confidence", DEFAULT_CONFIDENCE
+                )
+                if confidence > old_conf:
+                    pruned_indices.add(best_idx)
+                    log(f"  Superseding entry {best_idx} "
+                        f"(sim={best_score:.2f}, "
+                        f"old_conf={old_conf:.2f} → {confidence:.2f})")
 
     # -- Merge into FAISS index --------------------------------------------
     dim = embeddings.shape[1]
 
     if existing_index is not None and existing_index.ntotal > 0:
+        existing_vectors = existing_index.reconstruct_n(
+            0, existing_index.ntotal
+        )
+        keep_vectors = [
+            existing_vectors[j]
+            for j in range(len(existing_meta))
+            if j not in pruned_indices
+        ]
+        kept_meta = [
+            existing_meta[j]
+            for j in range(len(existing_meta))
+            if j not in pruned_indices
+        ]
         new_index = faiss.IndexFlatIP(dim)
-        existing_vectors = existing_index.reconstruct_n(0, existing_index.ntotal)
-        new_index.add(existing_vectors)
+        if keep_vectors:
+            new_index.add(np.array(keep_vectors))
         new_index.add(embeddings)
     else:
         new_index = faiss.IndexFlatIP(dim)
         new_index.add(embeddings)
+        kept_meta = existing_meta
 
-    combined_meta = existing_meta + new_meta
+    if pruned_indices:
+        log(f"  Pruned {len(pruned_indices)} superseded entries")
+
+    combined_meta = kept_meta + new_meta
 
     # -- Atomic write (temp + rename) --------------------------------------
     tmp_idx = index_path.with_suffix(".faiss.tmp")
@@ -482,13 +524,17 @@ def ingest_text(
     mind_name: str,
     source_label: str,
     minds_dir: str = DEFAULT_MINDS_DIR,
+    confidence: float = DEFAULT_CONFIDENCE,
 ) -> int:
     """Pre-chunk raw text and ingest it into the named mind."""
     if not text or len(text.strip()) < 50:
         log(f"Skipping empty/tiny text for {source_label}")
         return 0
     text = pre_chunk(text)
-    return ingest_into_mind(mind_name, [text], source=source_label, minds_dir=minds_dir)
+    return ingest_into_mind(
+        mind_name, [text], source=source_label,
+        minds_dir=minds_dir, confidence=confidence,
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -729,7 +775,8 @@ print(text[:50000])
 # ---------------------------------------------------------------------------
 
 def ingest_pdf(
-    path: str, mind_name: str, source_label: str, minds_dir: str
+    path: str, mind_name: str, source_label: str, minds_dir: str,
+    confidence: float = DEFAULT_CONFIDENCE,
 ) -> int:
     """Extract text from a local PDF (via ``pdftotext``) and ingest it."""
     try:
@@ -742,14 +789,15 @@ def ingest_pdf(
             log(f"PDF extraction empty for {path}")
             return 0
         log(f"PDF extracted: {len(text):,} chars from {Path(path).name}")
-        return ingest_text(text, mind_name, source_label, minds_dir)
+        return ingest_text(text, mind_name, source_label, minds_dir, confidence)
     except Exception as e:
         log(f"PDF extraction failed: {e}")
         return 0
 
 
 def download_and_ingest_pdf(
-    url: str, mind_name: str, source_label: str, minds_dir: str
+    url: str, mind_name: str, source_label: str, minds_dir: str,
+    confidence: float = DEFAULT_CONFIDENCE,
 ) -> int:
     """Download a PDF from a URL and ingest its text."""
     import urllib.request
@@ -768,7 +816,8 @@ def download_and_ingest_pdf(
                     f.write(chunk)
         size_mb = os.path.getsize(tmp_path) / 1024 / 1024
         log(f"Downloaded {size_mb:.1f} MB")
-        return ingest_pdf(tmp_path, mind_name, source_label, minds_dir)
+        return ingest_pdf(tmp_path, mind_name, source_label, minds_dir,
+                          confidence)
     except Exception as e:
         log(f"PDF download failed: {e}")
         return 0
@@ -953,18 +1002,28 @@ def main() -> None:
         "--max", type=int, default=50,
         help="Max items for search/playlist modes (default: 50)",
     )
+    parser.add_argument(
+        "--confidence", type=float, default=DEFAULT_CONFIDENCE,
+        help=f"Confidence score for ingested entries (0.0-1.0, default: "
+             f"{DEFAULT_CONFIDENCE}). Higher-confidence entries automatically "
+             f"replace semantically similar lower-confidence entries.",
+    )
 
     args = parser.parse_args()
     minds_dir: str = args.minds_dir
+    conf: float = max(0.0, min(1.0, args.confidence))
     start = time.time()
     total = 0
+
+    if conf != DEFAULT_CONFIDENCE:
+        log(f"Confidence: {conf:.2f}")
 
     if args.youtube:
         title, text = youtube_transcript(args.youtube)
         if text:
             total = ingest_text(
                 f"# {title}\nSource: YouTube\n\n{text}",
-                args.mind, f"youtube_{int(time.time())}", minds_dir,
+                args.mind, f"youtube_{int(time.time())}", minds_dir, conf,
             )
             log(f"Ingested '{title}': {total} entries")
 
@@ -985,7 +1044,7 @@ def main() -> None:
         if text:
             total = ingest_text(
                 f"# {title}\nSource: Wikipedia\n\n{text}",
-                args.mind, f"wikipedia_{int(time.time())}", minds_dir,
+                args.mind, f"wikipedia_{int(time.time())}", minds_dir, conf,
             )
             log(f"Ingested Wikipedia '{title}': {total} entries")
 
@@ -1005,6 +1064,7 @@ def main() -> None:
             )
             total = ingest_text(
                 text, args.mind, f"gutenberg_{args.gutenberg[:30]}", minds_dir,
+                conf,
             )
             log(f"Ingested book: {total} entries")
         else:
@@ -1013,18 +1073,22 @@ def main() -> None:
     elif args.url:
         text = fetch_url_text(args.url)
         if text:
-            total = ingest_text(text, args.mind, f"web_{int(time.time())}", minds_dir)
+            total = ingest_text(
+                text, args.mind, f"web_{int(time.time())}", minds_dir, conf,
+            )
             log(f"Ingested page: {total} entries")
 
     elif args.pdf:
         total = ingest_pdf(
             args.pdf, args.mind, f"pdf_{Path(args.pdf).stem}", minds_dir,
+            conf,
         )
         log(f"Ingested PDF: {total} entries")
 
     elif args.pdf_url:
         total = download_and_ingest_pdf(
             args.pdf_url, args.mind, f"pdf_{int(time.time())}", minds_dir,
+            conf,
         )
         log(f"Ingested PDF from URL: {total} entries")
 
@@ -1033,6 +1097,7 @@ def main() -> None:
             content = f.read()
         total = ingest_text(
             content, args.mind, f"file_{Path(args.file).stem}", minds_dir,
+            conf,
         )
         log(f"Ingested file: {total} entries")
 
@@ -1049,6 +1114,7 @@ def main() -> None:
                     n = ingest_text(
                         f"# {title}\n\n{text}",
                         args.mind, f"batch_{int(time.time())}", minds_dir,
+                        conf,
                     )
                     total += n
                     log(f"  {title[:50]}: {n} entries")
@@ -1057,6 +1123,7 @@ def main() -> None:
                 if text:
                     n = ingest_text(
                         text, args.mind, f"batch_{int(time.time())}", minds_dir,
+                        conf,
                     )
                     total += n
                     log(f"  {url[:50]}: {n} entries")
